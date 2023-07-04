@@ -100,6 +100,7 @@ internal class AndroidARView(
                         "init" -> {
                             initializeARView(call, result)
                         }
+
                         "getAnchorPose" -> {
                             val anchorNode = arSceneView.scene.findByName(call.argument("anchorId")) as AnchorNode?
                             if (anchorNode != null) {
@@ -115,6 +116,20 @@ internal class AndroidARView(
                             } else {
                                 result.error("Error", "could not get camera pose", null)
                             }
+                        }
+                        "getViewMatrix" -> {
+                            val camera = arSceneView?.arFrame?.camera
+                            val viewMatrix = FloatArray(16)
+                            camera?.getViewMatrix(viewMatrix, 0)
+
+                            result.success(viewMatrix)
+                        }
+                        "getProjectionMatrix" -> {
+                            val camera = arSceneView?.arFrame?.camera
+                            val projectionMatrix = FloatArray(16)
+                            camera?.getProjectionMatrix(projectionMatrix, 0, 0.1f, 100.0f)
+
+                            result.success(projectionMatrix)
                         }
                         "snapshot" -> {
                             var bitmap = Bitmap.createBitmap(arSceneView.width, arSceneView.height,
@@ -317,7 +332,7 @@ internal class AndroidARView(
 
         //Original visualizer: com.google.ar.sceneform.ux.R.raw.sceneform_footprint
 
-        MaterialFactory.makeTransparentWithColor(context, Color(255f, 255f, 255f, 0.3f))
+        MaterialFactory.makeTransparentWithColor(context, Color(255f, 255f, 255f, 0f))
                 .thenAccept { mat ->
                     footprintSelectionVisualizer.footprintRenderable = ShapeFactory.makeCylinder(0.7f,0.05f, Vector3(0f,0f,0f), mat)
                 }

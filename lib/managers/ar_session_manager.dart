@@ -50,6 +50,18 @@ class ARSessionManager {
     }
   }
 
+  /// CUSTOM CODE
+  Future<Matrix4> getViewMatrix() async {
+    final serializedViewMatrix = await _channel.invokeMethod<List<dynamic>>('getViewMatrix', {});
+    return MatrixConverter().fromJson(serializedViewMatrix!);
+  }
+
+  /// CUSTOM CODE
+  Future<Matrix4> getProjectionMatrix() async {
+    final serializedProjectionMatrix = await _channel.invokeMethod<List<dynamic>>('getProjectionMatrix', {});
+    return MatrixConverter().fromJson(serializedProjectionMatrix!);
+  }
+
   /// Returns the given anchor pose in Matrix4 format with respect to the world coordinate system of the [ARView]
   Future<Matrix4?> getPose(ARAnchor anchor) async {
     try {

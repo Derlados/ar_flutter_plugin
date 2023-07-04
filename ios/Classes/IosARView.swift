@@ -81,6 +81,23 @@ class IosARView: NSObject, FlutterPlatformView, ARSCNViewDelegate, UIGestureReco
                 //result(nil)
                 initializeARView(arguments: arguments!, result: result)
                 break
+            case "getViewMatrix":
+                if let frame = sceneView.session.currentFrame {
+                    let interfaceOrientation = UIApplication.shared.windows.first?.windowScene?.interfaceOrientation ?? UIInterfaceOrientation.unknown
+                    let matrix = frame.camera.viewMatrix(for: interfaceOrientation)
+                    result(serializeMatrix(matrix))
+                } else {
+                    result(FlutterError())
+                }
+                break
+            case "getProjectionMatrix":
+                if let frame = sceneView.session.currentFrame {
+                    let matrix = frame.camera.projectionMatrix
+                    result(serializeMatrix(matrix))
+                } else {
+                    result(FlutterError())
+                }
+                break
             case "getCameraPose":
                 if let cameraPose = sceneView.session.currentFrame?.camera.transform {
                     result(serializeMatrix(cameraPose))
